@@ -15,7 +15,8 @@ contract DeployLlamaPfp is Script {
             1, // mints per address
             "https://core.themetagame.xyz/api/contract-metadata/llama-pfp", // opensea contract metadata url
             false, // is mint active?
-            0x3EDfd44082A87CF1b4cbB68D6Cf61F0A40d0b68f // valid signer
+            0x3EDfd44082A87CF1b4cbB68D6Cf61F0A40d0b68f, // valid signer,
+            0xcb33682d6EFd271c6f744C489197133d7076CD9e // Llama Multisig TODO Update this address
         );
 
         vm.stopBroadcast();

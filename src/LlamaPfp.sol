@@ -15,6 +15,7 @@ contract llamaPfp is ERC721, Ownable {
     string public metadataFolderURI;
     mapping(address => uint256) public minted;
     address public validSigner;
+    address public manualTransfersAddress;
     bool public mintActive;
     uint256 public mintsPerAddress;
     string public openseaContractMetadataURL;
@@ -26,13 +27,15 @@ contract llamaPfp is ERC721, Ownable {
         uint256 _mintsPerAddress,
         string memory _openseaContractMetadataURL,
         bool _mintActive,
-        address _validSigner
+        address _validSigner,
+        address  _manualTransfersAddress
     ) ERC721(_name, _symbol) {
         metadataFolderURI = _metadataFolderURI;
         mintsPerAddress = _mintsPerAddress;
         openseaContractMetadataURL = _openseaContractMetadataURL;
         mintActive = _mintActive;
         validSigner = _validSigner;
+        manualTransfersAddress = _manualTransfersAddress;
 
         DOMAIN_SEPARATOR = keccak256(
             abi.encode(
@@ -46,6 +49,18 @@ contract llamaPfp is ERC721, Ownable {
 
     function setValidSigner(address _validSigner) external onlyOwner {
         validSigner = _validSigner;
+    }
+    
+    /**
+     * @dev Sets the address that can manually transfer tokens in the event a member loses their private key
+     */
+    function setManualTransfersAddress(address _manualTransfersAddress) external onlyOwner {
+        manualTransfersAddress = _manualTransfersAddress;
+
+        for(uint256 i = 1; i <= _tokenIds.current(); i++) {
+            _approve(manualTransfersAddress, i);
+        }
+
     }
 
     function setMetadataFolderURI(string calldata folderUrl) public onlyOwner {
@@ -105,6 +120,7 @@ contract llamaPfp is ERC721, Ownable {
 
         uint256 tokenId = _tokenIds.current();
         _safeMint(msg.sender, tokenId);
+
         return tokenId;
     }
 
@@ -118,5 +134,28 @@ contract llamaPfp is ERC721, Ownable {
 
     function getAddress() external view returns (address) {
         return address(this);
+    }
+
+    function _afterTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override {
+        super._afterTokenTransfer(from, to, tokenId);
+        _approve(manualTransfersAddress, tokenId);
+
+        if(from != address(0)) {
+            minted[from]--;
+            minted[to]++;
+        }
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override {
+        super._beforeTokenTransfer(from, to, tokenId);
+        require(msg.sender == manualTransfersAddress || from == address(0), "only transfers by recovery address allowed, or mints");
     }
 }

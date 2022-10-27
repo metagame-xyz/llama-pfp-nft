@@ -7,6 +7,8 @@ import "forge-std/console.sol";
 
 contract llamaPfpTest is Test {
     address constant owner = 0x44C489197133D7076Cd9ecB33682D6Efd271c6F7;
+    address constant llamaMultisig = 0xcb33682d6EFd271c6f744C489197133d7076CD9e;
+    address constant llamaMultisig2 = 0xD271c6F744c489197133D7076Cd9Ecb33682d6EF;
 
     uint private immutable signerPk = 1;
     address private immutable signer = vm.addr(1);
@@ -34,7 +36,8 @@ contract llamaPfpTest is Test {
             1,
             "NOT_IMPLEMENTED",
             false,
-            signer
+            signer,
+            llamaMultisig
         );
 
         bytes32 DOMAIN_SEPARATOR = keccak256(
@@ -99,6 +102,27 @@ contract llamaPfpTest is Test {
         );
     }
 
+    function testCannotMintTwiceAfterTransfer() public {
+        vm.deal(alice, 100000000000000000);
+        vm.prank(alice);
+        llamaPfpContract.mintWithSignature(
+            alice,
+            v,
+            r,
+            s
+        );
+        vm.prank(llamaMultisig);
+        llamaPfpContract.transferFrom(alice, bob, 1);
+        vm.prank(bob);
+        vm.expectRevert(bytes("only 1 mint per wallet address"));
+        llamaPfpContract.mintWithSignature(
+            bob,
+            v2,
+            r2,
+            s2
+        );
+    }
+
     function testMustMintForYourself() public {
         vm.deal(owner, 100000000000000000);
         vm.expectRevert(bytes("you have to mint for yourself"));
@@ -139,9 +163,65 @@ contract llamaPfpTest is Test {
         assertEq(newTokenId2, 2);
         assertEq(llamaPfpContract.mintedCount(), 2);
     }
+    
+    function testLlamaManualTransfer() public {
+        vm.deal(alice, 100000000000000000);
+        vm.prank(alice);
+        llamaPfpContract.mintWithSignature(alice, v, r, s);
+        vm.prank(llamaMultisig);
+        llamaPfpContract.transferFrom(alice, bob, 1);
+        assertEq(llamaPfpContract.ownerOf(1), bob);
+    }
 
-    // function testFailWithdrawByNonOwner() public {
-    //     vm.prank(alice);
-    //     llamaPfpContract.withdraw();
-    // }
+    function testFailOwnerManualTransfer() public {
+        vm.deal(alice, 100000000000000000);
+        vm.prank(alice);
+        llamaPfpContract.mintWithSignature(alice, v, r, s);
+        vm.prank(owner);
+        llamaPfpContract.transferFrom(alice, bob, 1);
+
+    }
+    
+    function testNormalTransfer() public {
+        vm.deal(alice, 100000000000000000);
+        vm.prank(alice);
+        llamaPfpContract.mintWithSignature(alice, v, r, s);
+        vm.prank(alice);
+        vm.expectRevert("only transfers by recovery address allowed, or mints");
+        llamaPfpContract.transferFrom(alice, bob, 1);
+    }
+
+    function testNewManualAddressTransfer() public {
+        vm.deal(alice, 100000000000000000);
+        vm.prank(alice);
+        llamaPfpContract.mintWithSignature(alice, v, r, s);
+        vm.prank(owner);
+        llamaPfpContract.setManualTransfersAddress(llamaMultisig2);
+        vm.prank(llamaMultisig2);
+        llamaPfpContract.transferFrom(alice, bob, 1);
+        assertEq(llamaPfpContract.ownerOf(1), bob);
+    }
+
+    function testOldManualAddressTransferFails() public {
+        vm.deal(alice, 100000000000000000);
+        vm.prank(alice);
+        llamaPfpContract.mintWithSignature(alice, v, r, s);
+        vm.prank(owner);
+        llamaPfpContract.setManualTransfersAddress(llamaMultisig2);
+        vm.prank(llamaMultisig);
+        vm.expectRevert("ERC721: caller is not token owner or approved");
+        llamaPfpContract.transferFrom(alice, bob, 1);
+        vm.prank(owner);
+        vm.expectRevert("ERC721: caller is not token owner or approved");
+        llamaPfpContract.transferFrom(alice, bob, 1);
+    }
+
+    function testOwnerTransferFails() public {
+        vm.deal(alice, 100000000000000000);
+        vm.prank(alice);
+        llamaPfpContract.mintWithSignature(alice, v, r, s);
+        vm.prank(owner);
+        vm.expectRevert("ERC721: caller is not token owner or approved");
+        llamaPfpContract.transferFrom(alice, bob, 1);
+    }
 }
