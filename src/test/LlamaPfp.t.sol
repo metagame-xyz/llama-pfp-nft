@@ -141,8 +141,8 @@ contract llamaPfpTest is Test {
         assertEq(llamaPfpContract.mintedCount(), 2);
     }
 
-    function testFailWithdrawByNonOwner() public {
-        vm.prank(alice);
-        llamaPfpContract.withdraw();
-    }
+    // function testFailWithdrawByNonOwner() public {
+    //     vm.prank(alice);
+    //     llamaPfpContract.withdraw();
+    // }
 }
