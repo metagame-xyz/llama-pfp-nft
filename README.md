@@ -1,12 +1,23 @@
-# The Logbook contract
+# Llama PFP contract
 
-## Set up
+## Overview
+Each Llama members can mint one NFT.
+
+Each address that has a Llama PFP NFT will not be able to mint a 2nd NFT. The NFTs are non-transferable by their owners.
+
+<br>
+The Llama Multisig has the power to transfer any NFT to another wallet in the event a member's wallet gets compromised or they lose their key.
+The contract owner can update the Llama Multisig address in the event the Llama Multisig is compromised or is rotated out of operations.
+
+<br>
+
+## Dev Set up
 
 * Make sure you have the foundry/forge CLI tools installed with a version of >=0.2.0 (see [the docs](https://book.getfoundry.sh/) for help)
 * Run `forge install` to install necessary dependencies
 * Create a `.env` file like the following...
 ````
-RINKEBY_RPC_URL="https://eth-rinkeby.alchemyapi.io/v2/<YOUR_ALCHEMY_PROJECT_ID>"
+GOERLI_RPC_URL="https://eth-Goerli.alchemyapi.io/v2/<YOUR_ALCHEMY_PROJECT_ID>"
 MAINNET_RPC_URL="https://eth-mainnet.alchemyapi.io/v2/<YOUR_ALCHEMY_PROJECT_ID>"
 PRIVATE_KEY=<DEPLOYER_PRIVATE_KEY>
 ETHERSCAN_KEY=<YOUR_ETHERSCAN_KEY>
@@ -14,12 +25,12 @@ ETHERSCAN_KEY=<YOUR_ETHERSCAN_KEY>
 * Run `source .env`
 * Check the constructor args in `script/deploy.s.sol`. 
 
-## Deploy to rinkeby
+## Deploy to Goerli
 
-* Deploy the contract by running `forge script script/deploy.s.sol:DeployLogbook --rpc-url $RINKEBY_RPC_URL --private-key $PRIVATE_KEY --broadcast --etherscan-api-key $ETHERSCAN_KEY -vvvv`
-* Wait a minute or two, and then verify the contract on Etherscan by running `forge script script/deploy.s.sol:DeployLogbook --rpc-url $RINKEBY_RPC_URL --private-key $PRIVATE_KEY --verify --etherscan-api-key $ETHERSCAN_KEY -vvvv`
+* Deploy the contract by running `forge script script/deploy.s.sol:DeployLlamaPfp --rpc-url $GOERLI_RPC_URL --private-key $PRIVATE_KEY --broadcast --etherscan-api-key $ETHERSCAN_KEY -vvvv`
+* Wait a minute or two, and then verify the contract on Etherscan by running `forge script script/deploy.s.sol:DeployLlamaPfp --rpc-url $GOERLI_RPC_URL --private-key $PRIVATE_KEY --verify --etherscan-api-key $ETHERSCAN_KEY -vvvv`
 
 ## Deploy to mainnet
 
-* Deploy the contract by running `forge script script/deploy.s.sol:DeployLogbook --rpc-url $MAINNET_RPC_URL --private-key $PRIVATE_KEY --broadcast --etherscan-api-key $ETHERSCAN_KEY -vvvv`
-* Wait a minute or two, and then verify the contract on Etherscan by running `forge script script/deploy.s.sol:DeployLogbook --rpc-url $MAINNET_RPC_URL --private-key $PRIVATE_KEY --verify --etherscan-api-key $ETHERSCAN_KEY -vvvv`
+* Deploy the contract by running `forge script script/deploy.s.sol:DeployLlamaPfp --rpc-url $MAINNET_RPC_URL --private-key $PRIVATE_KEY --broadcast --etherscan-api-key $ETHERSCAN_KEY -vvvv`
+* Wait a minute or two, and then verify the contract on Etherscan by running `forge script script/deploy.s.sol:DeployLlamaPfp --rpc-url $MAINNET_RPC_URL --private-key $PRIVATE_KEY --verify --etherscan-api-key $ETHERSCAN_KEY -vvvv`
