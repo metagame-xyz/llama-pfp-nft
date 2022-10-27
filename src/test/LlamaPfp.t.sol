@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity 0.8.13;
 
 import "forge-std/Test.sol";
 import "../LlamaPfp.sol";
@@ -24,7 +24,6 @@ contract llamaPfpTest is Test {
     uint8 v2;
 
     llamaPfp llamaPfpContract;
-    // bytes immutable DOMAIN_SEPARATOR;
 
     constructor() {
         vm.prank(owner);
