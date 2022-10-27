@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: GNU LGPLv3
 pragma solidity 0.8.13;
 
+import "forge-std/console.sol";
+
 import "openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
 import "openzeppelin-contracts/contracts/access/Ownable.sol";
 import "openzeppelin-contracts/contracts/utils/Counters.sol";
 import "openzeppelin-contracts/contracts/utils/Strings.sol";
 
-contract logbook is ERC721, Ownable {
+contract llamaPfp is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     bytes32 immutable DOMAIN_SEPARATOR;
     string public metadataFolderURI;
     mapping(address => uint256) public minted;
-    uint256 public constant price = 0.02 ether;
     address public validSigner;
     bool public mintActive;
     uint256 public mintsPerAddress;
@@ -35,7 +36,7 @@ contract logbook is ERC721, Ownable {
 
         DOMAIN_SEPARATOR = keccak256(
             abi.encode(
-                keccak256("Metagame Logbook"),
+                keccak256("Llama PFP"),
                 keccak256("1"),
                 block.chainid,
                 address(this)
@@ -78,6 +79,7 @@ contract logbook is ERC721, Ownable {
         bytes32 r,
         bytes32 s
     ) public payable returns (uint256) {
+        // console.log("why doesn't this work", block.chainid);
         require(mintActive == true, "mint is not active rn..");
         // require(tx.origin == msg.sender, "dont get Seven'd");
         require(minter == msg.sender, "you have to mint for yourself");
@@ -86,15 +88,13 @@ contract logbook is ERC721, Ownable {
             "only 1 mint per wallet address"
         );
 
-        require(msg.value == price, "This mint costs 0.02 eth"); // TODO: set price
-        
-
         bytes32 payloadHash = keccak256(abi.encode(DOMAIN_SEPARATOR, minter));
         bytes32 messageHash = keccak256(
             abi.encodePacked("\x19Ethereum Signed Message:\n32", payloadHash)
         );
 
         address actualSigner = ecrecover(messageHash, v, r, s);
+
 
         require(actualSigner != address(0), "ECDSA: invalid signature");
         require(actualSigner == validSigner, "Invalid signer");
@@ -114,21 +114,6 @@ contract logbook is ERC721, Ownable {
 
     function setMintActive(bool _mintActive) public onlyOwner {
         mintActive = _mintActive;
-    }
-
-    function withdraw() public onlyOwner {
-        uint256 balance = address(this).balance;
-        payable(msg.sender).transfer(balance);
-    }
-
-    function pay(address payee, uint256 amountInEth) public onlyOwner {
-        uint256 balance = address(this).balance;
-        require(balance >= amountInEth, "We dont have that much to pay!");
-        payable(payee).transfer(amountInEth);
-    }
-
-    function getBalance() external view returns (uint256) {
-        return address(this).balance;
     }
 
     function getAddress() external view returns (address) {

@@ -9,11 +9,11 @@ contract DeployLogbook is Script {
         vm.startBroadcast();
 
          logbook logbookInstance = new logbook(
-            "Logbook", // name
-            "LGBK", // symbol
-            "https://logbook.themetagame.xyz/api/metadata/", // metadata folder uri
+            "Llama PFP", // name
+            "LLMAPFP", // symbol
+            "https://core.themetagame.xyz/api/metadata/llama-pfp/", // metadata folder uri
             1, // mints per address
-            "https://logbook.themetagame.xyz/api/contract-metadata", // opensea contract metadata url
+            "https://logbook.themetagame.xyz/api/contract-metadata/llama-pfp", // opensea contract metadata url
             false, // is mint active?
             0x3EDfd44082A87CF1b4cbB68D6Cf61F0A40d0b68f // valid signer
         );
