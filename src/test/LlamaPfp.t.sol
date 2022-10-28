@@ -93,7 +93,7 @@ contract llamaPfpTest is Test {
             s
         );
         vm.prank(alice);
-        vm.expectRevert(bytes("only 1 mint per wallet address"));
+        vm.expectRevert("only 1 mint per wallet address");
         llamaPfpContract.mintWithSignature(
             alice,
             v,
@@ -114,7 +114,7 @@ contract llamaPfpTest is Test {
         vm.prank(llamaMultisig);
         llamaPfpContract.transferFrom(alice, bob, 1);
         vm.prank(bob);
-        vm.expectRevert(bytes("only 1 mint per wallet address"));
+        vm.expectRevert("only 1 mint per wallet address");
         llamaPfpContract.mintWithSignature(
             bob,
             v2,
@@ -125,7 +125,7 @@ contract llamaPfpTest is Test {
 
     function testMustMintForYourself() public {
         vm.deal(owner, 100000000000000000);
-        vm.expectRevert(bytes("you have to mint for yourself"));
+        vm.expectRevert("you have to mint for yourself");
         vm.prank(owner);
         llamaPfpContract.mintWithSignature(
             alice,

@@ -52,7 +52,7 @@ contract llamaPfp is ERC721, Ownable {
     }
     
     /**
-     * @dev Sets the address that can manually transfer tokens in the event a member loses their private key
+     * @dev Sets the address that can manually transfer tokens in the event a member loses their private key. This function will become more expensive the more NFTs this contract has created
      */
     function setManualTransfersAddress(address _manualTransfersAddress) external onlyOwner {
         manualTransfersAddress = _manualTransfersAddress;
