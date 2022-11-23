@@ -8,15 +8,19 @@ contract DeployLlamaPfp is Script {
     function run() external {
         vm.startBroadcast();
 
+        // use a different address if the chain is mainnet
+        address validSigner = block.chainid == 1 ? 0xF04284F4470230b4f19C1dCa4FC9cd0f93170Ba6 : 0x3EDfd44082A87CF1b4cbB68D6Cf61F0A40d0b68f;
+        address llamaMultisig = 0Xa519A7Ce7B24333055781133B13532Aeabfac81B; // TODO Update this address
+
          llamaPfp llamaPfpInstance = new llamaPfp(
-            "Llama PFP", // name
-            "LLMAPFP", // symbol
-            "https://core.themetagame.xyz/api/metadata/llama-pfp/", // metadata folder uri
+            "Llama Avatar", // name
+            "LLMAVTR", // symbol
+            "https://core.themetagame.xyz/api/metadata/llamaPfp/", // metadata folder uri
             1, // mints per address
-            "https://core.themetagame.xyz/api/contract-metadata/llama-pfp", // opensea contract metadata url
+            "https://core.themetagame.xyz/api/contract-metadata/llamaPfp", // opensea contract metadata url
             false, // is mint active?
-            0x3EDfd44082A87CF1b4cbB68D6Cf61F0A40d0b68f, // valid signer,
-            0xcb33682d6EFd271c6f744C489197133d7076CD9e // Llama Multisig TODO Update this address
+            validSigner,
+            llamaMultisig
         );
 
         vm.stopBroadcast();

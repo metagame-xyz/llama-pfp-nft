@@ -42,7 +42,7 @@ contract llamaPfpTest is Test {
 
         bytes32 DOMAIN_SEPARATOR = keccak256(
             abi.encode(
-                keccak256("Llama PFP"),
+                keccak256("llamaPfp"),
                 keccak256("1"),
                 block.chainid,
                 llamaPfpContract.getAddress()

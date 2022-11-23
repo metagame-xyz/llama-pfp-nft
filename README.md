@@ -17,7 +17,7 @@ The contract owner can update the Llama Multisig address in the event the Llama 
 * Run `forge install` to install necessary dependencies
 * Create a `.env` file like the following...
 ````
-GOERLI_RPC_URL="https://eth-Goerli.alchemyapi.io/v2/<YOUR_ALCHEMY_PROJECT_ID>"
+GOERLI_RPC_URL="https://eth-goerli.alchemyapi.io/v2/<YOUR_ALCHEMY_PROJECT_ID>"
 MAINNET_RPC_URL="https://eth-mainnet.alchemyapi.io/v2/<YOUR_ALCHEMY_PROJECT_ID>"
 PRIVATE_KEY=<DEPLOYER_PRIVATE_KEY>
 ETHERSCAN_KEY=<YOUR_ETHERSCAN_KEY>

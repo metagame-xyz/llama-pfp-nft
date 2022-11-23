@@ -39,7 +39,7 @@ contract llamaPfp is ERC721, Ownable {
 
         DOMAIN_SEPARATOR = keccak256(
             abi.encode(
-                keccak256("Llama PFP"),
+                keccak256("llamaPfp"),
                 keccak256("1"),
                 block.chainid,
                 address(this)
@@ -65,6 +65,10 @@ contract llamaPfp is ERC721, Ownable {
 
     function setMetadataFolderURI(string calldata folderUrl) public onlyOwner {
         metadataFolderURI = folderUrl;
+    }
+    
+    function setContractMetadataFolderURI(string calldata folderUrl) public onlyOwner {
+        openseaContractMetadataURL = folderUrl;
     }
 
     function tokenURI(uint256 tokenId)
